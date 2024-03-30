@@ -1,0 +1,33 @@
+﻿@page "/update-item"
+@page "/update-item/{id:int}"
+@using BlazorWasm.Shared
+@inject HttpClient Http
+
+@if(Id == null)
+{
+    <h3>Add Item</h3>
+}
+else
+{
+    <h3>Update</h3>
+}
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    public Item item { get; set; } = new Item();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Id is not null)
+        {
+            var result = await Http.GetFromJsonAsync<Item>($"api/item/{(int)Id}");
+            if (result is not null)
+            {
+                item = result;
+            }
+        }
+    }
+
+}

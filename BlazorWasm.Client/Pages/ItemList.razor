@@ -1,0 +1,64 @@
+﻿@page "/item"
+@inject HttpClient Http
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Item</PageTitle>
+
+<h1>Item List</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Code</td>
+                    <td>@item.Description</td>
+                    <td>@item.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Item> items = new List<Item>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result  = await Http.GetFromJsonAsync<List<Item>>("api/item");
+        if (result is not null)
+            items = result;
+    }
+
+    public class Item
+    {
+        public int Id { get; set; }
+        
+        public string Code { get; set; }
+        
+        public string Description { get; set; }
+
+        public bool Status { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public List<UnitOfMeasurement> UnitOfMeasurements { get; set; }
+    }
+}
